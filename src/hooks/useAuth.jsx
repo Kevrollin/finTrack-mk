@@ -14,13 +14,18 @@ export function AuthProvider({ children }) {
       return
     }
 
-    const { data } = await supabase
-      .from('profiles')
-      .select('user_id, email, full_name, is_admin')
-      .eq('user_id', userId)
-      .maybeSingle()
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('user_id, email, full_name, is_admin')
+        .eq('user_id', userId)
+        .maybeSingle()
 
-    setProfile(data || null)
+      setProfile(data || null)
+    } catch {
+      // Never block app rendering if profile lookup fails.
+      setProfile(null)
+    }
   }
 
   useEffect(() => {
@@ -28,14 +33,25 @@ export function AuthProvider({ children }) {
 
     const initAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        const sessionResult = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise((resolve) => setTimeout(() => resolve({ data: { session: null } }), 7000)),
+        ])
+
+        const { data: { session } } = sessionResult
         const nextUser = session?.user ?? null
         if (mounted) {
           setUser(nextUser)
+          // Unblock route rendering first, then fetch profile in background.
+          setLoading(false)
           await loadProfile(nextUser?.id)
         }
-      } finally {
-        if (mounted) setLoading(false)
+      } catch {
+        if (mounted) {
+          setUser(null)
+          setProfile(null)
+          setLoading(false)
+        }
       }
     }
 
