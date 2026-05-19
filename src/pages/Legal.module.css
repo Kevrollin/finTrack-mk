@@ -1,0 +1,15 @@
+.page {
+  padding: 48px 24px;
+  display: flex;
+  justify-content: center;
+}
+.container {
+  max-width: 880px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px;
+  border-radius: 12px;
+}
+.container h1 { margin: 0 0 8px 0; }
+.container h2 { margin-top: 18px; }
+.container p { color: var(--text); line-height: 1.5; }

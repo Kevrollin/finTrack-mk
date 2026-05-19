@@ -1,0 +1,75 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title { margin: 0; font-size: 28px; }
+.sub { margin: 6px 0 0; color: var(--text-muted); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.card, .tableWrap, .loading, .error {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.card { padding: 16px; }
+.cardLabel { color: var(--text-muted); font-size: 13px; }
+.cardValue { margin-top: 10px; font-size: 24px; font-weight: 700; }
+
+.tableWrap { overflow: auto; }
+.table { width: 100%; border-collapse: collapse; min-width: 880px; }
+.table th, .table td { padding: 14px 16px; border-bottom: 1px solid var(--border); text-align: left; }
+.table th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.table tr:last-child td { border-bottom: 0; }
+
+.userCell { display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(200,240,74,.16), rgba(255,255,255,.03));
+  border: 1px solid var(--border);
+  font-weight: 700;
+}
+.userName { font-weight: 600; }
+.userEmail { color: var(--text-muted); font-size: 13px; }
+.status { padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.statusAdmin { background: rgba(200,240,74,.12); color: var(--accent); }
+.statusUser { background: rgba(255,255,255,.06); color: var(--text-muted); }
+
+.loading, .error { padding: 18px; }
+.error { color: #fca5a5; }
+
+@media (max-width: 1100px) {
+  .statsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .header { flex-direction: column; }
+  .statsGrid { grid-template-columns: 1fr; }
+}

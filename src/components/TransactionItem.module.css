@@ -1,0 +1,108 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.item:hover {
+  background: var(--bg-hover);
+}
+
+.item:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleting {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.iconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.icon { line-height: 1; }
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.dot { color: var(--text-subtle); }
+
+.note {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  font-style: italic;
+}
+
+.amount {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.income { color: var(--income); }
+.expense { color: var(--text); }
+
+.deleteBtn {
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.deleteBtn:hover {
+  background: var(--expense-dim);
+  color: var(--expense);
+}
+
+.deleteBtnConfirm {
+  background: var(--expense-dim);
+  color: var(--expense);
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .deleteBtn { opacity: 1; }
+  .note { display: none; }
+}
