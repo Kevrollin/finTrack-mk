@@ -1,6 +1,6 @@
 # FinTrack — Personal Finance, Simplified
 
-FinTrack is a focused personal finance tracker built with React, Vite, and Supabase. This README describes the system architecture, data model, security (RLS), Edge Function usage, deployment steps, and admin workflows. Credit: project steward `kelvincodes25` (you).
+FinTrack is a focused personal finance tracker built with React, Vite, and Supabase. This README describes the system architecture, data model, security (RLS), Edge Function usage, deployment steps, and admin workflows. Credit: project steward `kelvin Mukaria - devMK`.
 
 ---
 
