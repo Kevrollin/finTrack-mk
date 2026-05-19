@@ -2,11 +2,24 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
+const LAST_OPEN_KEY = 'fintrack:last-open-at'
+const INACTIVITY_LIMIT_MS = 30 * 24 * 60 * 60 * 1000
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const markLastOpen = () => {
+    localStorage.setItem(LAST_OPEN_KEY, String(Date.now()))
+  }
+
+  const isInactiveBeyondLimit = () => {
+    const raw = localStorage.getItem(LAST_OPEN_KEY)
+    const lastOpenAt = raw ? Number(raw) : 0
+    if (!lastOpenAt || Number.isNaN(lastOpenAt)) return false
+    return Date.now() - lastOpenAt > INACTIVITY_LIMIT_MS
+  }
 
   const loadProfile = async (userId) => {
     if (!userId) {
@@ -38,7 +51,16 @@ export function AuthProvider({ children }) {
           new Promise((resolve) => setTimeout(() => resolve({ data: { session: null } }), 7000)),
         ])
 
-        const { data: { session } } = sessionResult
+        let { data: { session } } = sessionResult
+
+        // Force logout only if user has not opened the app for more than 30 days.
+        if (session && isInactiveBeyondLimit()) {
+          await supabase.auth.signOut()
+          session = null
+        }
+
+        if (session) markLastOpen()
+
         const nextUser = session?.user ?? null
         if (mounted) {
           setUser(nextUser)
@@ -60,6 +82,11 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const nextUser = session?.user ?? null
       if (mounted) {
+        if (nextUser) {
+          markLastOpen()
+        } else {
+          localStorage.removeItem(LAST_OPEN_KEY)
+        }
         setUser(nextUser)
         await loadProfile(nextUser?.id)
       }
@@ -86,6 +113,7 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
     if (error) throw error
+    localStorage.removeItem(LAST_OPEN_KEY)
   }
 
   return (
