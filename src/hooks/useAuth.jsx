@@ -24,20 +24,35 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const nextUser = session?.user ?? null
-      setUser(nextUser)
-      await loadProfile(nextUser?.id)
-      setLoading(false)
-    })
+    let mounted = true
+
+    const initAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const nextUser = session?.user ?? null
+        if (mounted) {
+          setUser(nextUser)
+          await loadProfile(nextUser?.id)
+        }
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    initAuth()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const nextUser = session?.user ?? null
-      setUser(nextUser)
-      await loadProfile(nextUser?.id)
+      if (mounted) {
+        setUser(nextUser)
+        await loadProfile(nextUser?.id)
+      }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   const signUp = async (email, password) => {

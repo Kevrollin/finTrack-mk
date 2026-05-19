@@ -17,24 +17,29 @@ function ProtectedRoute({ children }) {
       <div className="spinner" style={{ width: 32, height: 32 }} />
     </div>
   )
-  if (!user) return <Navigate to="/auth" replace />
+  if (!user) return <Navigate to="/" replace />
   return children
 }
 
 function AdminRoute({ children }) {
-  const { isAdmin, loading } = useAuth()
+  const { user, profile, loading } = useAuth()
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100dvh' }}>
       <div className="spinner" style={{ width: 32, height: 32 }} />
     </div>
   )
-  if (!isAdmin) return <Navigate to="/dashboard" replace />
+  if (!user) return <Navigate to="/" replace />
+  if (!profile?.is_admin) return <Navigate to="/dashboard" replace />
   return children
 }
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth()
-  if (loading) return null
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100dvh' }}>
+      <div className="spinner" style={{ width: 32, height: 32 }} />
+    </div>
+  )
   if (user) return <Navigate to="/dashboard" replace />
   return children
 }
